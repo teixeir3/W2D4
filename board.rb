@@ -20,10 +20,10 @@ class Board
         row.each_index do |y|
           if x == 0 || x % 2 == 0
             next if y == 0 || y % 2 == 0
-            default_rows[x][y] = Piece.new(self, :red, [x, y])
+            default_rows[x][y] = Piece.new(self, color, [x, y])
           else
             next unless y % 2 == 0
-            default_rows[x][y] = Piece.new(self, :white, [x, y])
+            default_rows[x][y] = Piece.new(self, color, [x, y])
           end
         end
       end
