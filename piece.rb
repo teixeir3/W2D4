@@ -9,26 +9,26 @@ class Piece
   }
 
   DIAGONAL_DIRS = {
-     :up_left => [-1, -1],
-     :up_right => [-1,  1],
-     :down_left =>  [ 1, -1],
-     :down_right => [ 1,  1]
+     :nw => [-1, -1],
+     :ne => [-1,  1],
+     :sw =>  [ 1, -1],
+     :se => [ 1,  1]
     }
 
   JUMP_DIRS = {
-      :up_left => [-2, -2],
-      :up_right => [-2,  2],
-      :down_left =>  [ 2, -2],
-      :down_right => [ 2,  2]
+      :nw => [-2, -2],
+      :ne => [-2,  2],
+      :sw =>  [ 2, -2],
+      :se => [ 2,  2]
     }
 
-  attr_accessor :king, :pos
+  attr_accessor :kinged, :pos
   attr_reader :color, :board
 
 
-  def initialize(board, color, pos, king = false)
+  def initialize(board, color, pos, kinged = false)
     #add errors if off board or wrong color
-    @board, @color, @pos, @king = board, color, pos, king
+    @board, @color, @pos, @kinged = board, color, pos, kinged
 
     @token = (@color == :red) ? :r : :w
 
@@ -55,6 +55,7 @@ class Piece
     @board.move(start_pos, end_pos)
 
     maybe_promote
+
     true
   end
 
@@ -70,6 +71,10 @@ class Piece
     return false unless jump_diffs.include?(cur_move_diff)
 
     direction = JUMP_DIRS.key(cur_move_diff)
+    unless @kinged
+      if color == white
+      end
+    end
 
     # shorten this later.
     jumped_square = [DIAGONAL_DIRS[direction][0] + start_pos[0], DIAGONAL_DIRS[direction][1] + start_pos[1]]
@@ -80,11 +85,12 @@ class Piece
     @board[jumped_square] = nil
     @board.move(start_pos, end_pos)
     maybe_promote
+
     true
   end
 
   def maybe_promote
-    self.king = true if on_opposite_side?
+    self.kinged = true if on_opposite_side?
   end
 
   def on_opposite_side?
@@ -127,13 +133,13 @@ class Piece
 
   def render
     if color == :red
-      if @king
+      if @kinged
         print UNICODES[:r_king]
       else
         print UNICODES[:r_piece]
       end
     else
-      if @king
+      if @kinged
         print UNICODES[:w_king]
       else
         print UNICODES[:w_piece]
