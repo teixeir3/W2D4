@@ -6,32 +6,41 @@ end
 class Board
   attr_reader :rows
 
-  def default_board
-    # rows = Array.new(8) { Array.new(8) }
-  #   rows = rows.each_with_index do |row, x|
-  #     next if x.between?(2, 5)
-  #     color = :white if x == 0 || x == 1
-  #     color = :black if x == 6 || x == 7
-  #     row.each_index do |y|
-  #       if x == 1 || x == 6
-  #         rows[x][y] = Pawn.new([x, y], self, color)
-  #       else
-  #         case y
-  #         when 0, 7
-  #           rows[x][y] = Rook.new([x, y], self, color)
-  #         when 1, 6
-  #           rows[x][y] = Knight.new([x, y], self, color)
-  #         when 2, 5
-  #           rows[x][y] = Bishop.new([x, y], self, color)
-  #         when 3
-  #           rows[x][y] = Queen.new([x, y], self, color)
-  #         when 4
-  #           rows[x][y] = King.new([x, y], self, color)
-  #         end
-  #       end
-  #     end
-  #   end
-  #   rows
+  def default_board  # Populates default board with "x". MUST ADD Piece Objects.
+    rows = Array.new(8) { Array.new(8) }
+
+    rows = rows.each_with_index do |row, x|
+      next if x.between?(3, 4)
+      color = :red if x.between?(0, 2)
+      color = :white if x.between?(5, 7)
+
+      row.each_index do |y|
+        if x == 0 || x % 2 == 0
+          next if y == 0 || y % 2 == 0
+          rows[x][y] = "x"
+        else
+          next unless y % 2 == 0
+          rows[x][y] = "x"
+        end
+        # if x == 1 || x == 6
+#           rows[x][y] = Pawn.new([x, y], self, color)
+#         else
+#           case y
+#           when 0, 7
+#             rows[x][y] = Rook.new([x, y], self, color)
+#           when 1, 6
+#             rows[x][y] = Knight.new([x, y], self, color)
+#           when 2, 5
+#             rows[x][y] = Bishop.new([x, y], self, color)
+#           when 3
+#             rows[x][y] = Queen.new([x, y], self, color)
+#           when 4
+#             rows[x][y] = King.new([x, y], self, color)
+#           end
+#         end
+      end
+    end
+    rows
   end
 
   def initialize(rows = self.default_board)
