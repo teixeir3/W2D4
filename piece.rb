@@ -1,3 +1,10 @@
+require 'debugger'
+
+class InvalidMoveError < StandardError
+end
+
+class InvalidSequenceError < StandardError
+end
 
 class Piece
 
@@ -73,9 +80,6 @@ class Piece
 
 
   def perform_jump(start_pos, end_pos)
-    # check if legal
-    # illegal move returns false
-    # removes jumped piece from the board
     cur_move_diff = (end_pos[0] - start_pos[0]), (end_pos[1] - start_pos[1])
 
     # should raise error
@@ -122,12 +126,25 @@ class Piece
 
   def perform_moves!(move_sequence)
     # takes a sequence of moves
-    # move_sequence can either be one slide, or 1+ jmps
-    # if sequence is 1 move long, try sliding, if fail, try jumping
-    # if sequence > 1, try jumping until sequence has no more moves or one move fails
+    if move_sequence.count % 2 != 0
+      raise InvalidMoveError
+    elsif move_sequence.count == 2
+      # make a sliding move
+      start_pos = move_sequence.shift
+      end_pos = move_sequence.shift
+      unless perform_slide(start_pos, end_pos)
+        raise InvalidMoveError unless perform_jump(start_pos, end_pos)
+      end
+    elsif move_sequence.count > 2
+      # make jumping moves until you're out of moves.
+      while move_sequence.count > 0
+        start_pos = move_sequence.shift
+        end_pos = move_sequence.shift
+        raise InvalidMoveError unless perform_jump(start_pos, end_pos)
+      end
+    end
 
-    # performs moves 1 by 1, raises InvalidMoveError if fails
-
+    nil
   end
 
   def valid_move_seq?
@@ -163,8 +180,5 @@ class Piece
       end
     end
   end
-
-
-
 
 end

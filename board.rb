@@ -2,9 +2,6 @@ require_relative 'piece.rb'
 require 'debugger'
 
 
-class FatalBoardError < StandardError
-end
-
 class Board
   attr_accessor :rows
 
@@ -28,6 +25,7 @@ class Board
         end
       end
     end
+
     default_rows
   end
 
@@ -65,6 +63,7 @@ class Board
     else
       raise InvalidMoveError
     end
+
     self
   end
 
@@ -82,11 +81,12 @@ class Board
     duped_board.pieces.each do |piece|
       piece.board = duped_board
     end
+
     duped_board
   end
 
   def pieces
-    # returns arr of pieces
+    # returns arr of pieces ADD COMPACT
     self.rows.flatten.reject { |cell| cell.nil? }
   end
 
@@ -99,6 +99,32 @@ class Board
     self[target_pos] = piece
   end
 
+
+  def render
+    print "  "
+    ("a".."h").each { |letter| print "#{letter}" }
+    puts
+    @rows.each_with_index do |row, i|
+      print "#{i+1} "
+      row.each do |cell|
+        if cell.nil?
+          # Maybe add unicode for blank squares
+          print "\u25FB"
+        else
+          print cell.render
+        end
+      end
+      puts
+    end
+
+    nil
+  end
+
+  ############### REMNANTS OF CHESS BOARD #######################
+
+  # class FatalBoardError < StandardError
+  # end
+  #
   # def in_check?(color)
   #   king_pos = find_king(color)
   #   pieces.any? { |piece| piece.moves.include?(king_pos) }
@@ -118,24 +144,6 @@ class Board
   #   end
   #   raise FatalBoardError
   # end
-
-  def render
-    print "  "
-    ("a".."h").each { |letter| print "#{letter}" }
-    puts
-    @rows.each_with_index do |row, i|
-      print "#{i+1} "
-      row.each do |cell|
-        if cell.nil?
-          # Maybe add unicode for blank squares
-          print "\u25FB"
-        else
-          print cell.render
-        end
-      end
-      puts
-    end
-    nil
-  end
+  ###################################################################
 
 end
