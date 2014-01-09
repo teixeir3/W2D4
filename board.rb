@@ -1,32 +1,35 @@
 require_relative 'piece.rb'
+require 'debugger'
+
 
 class FatalBoardError < StandardError
 end
 
 class Board
-  attr_reader :rows
+  attr_accessor :rows
 
-  def default_board  # Populates default board with "x". MUST ADD Piece Objects.
+  def self.default_board  # Populates default board with "x". MUST ADD Piece Objects.
     rows = Array.new(8) { Array.new(8) }
 
     rows = rows.each_with_index do |row, x|
       next if x.between?(3, 4)
       color = :red if x.between?(0, 2)
       color = :white if x.between?(5, 7)
-
       row.each_index do |y|
         if x == 0 || x % 2 == 0
           next if y == 0 || y % 2 == 0
-          rows[x][y] = "x"
+          rows[x][y] = Piece.new(self, :red, [x, y])
         else
           next unless y % 2 == 0
-          rows[x][y] = "x"
+          rows[x][y] = Piece.new(self, :white, [x, y])
         end
+      end
     end
     rows
   end
 
-  def initialize(rows = self.default_board)
+  def initialize(rows = Board.default_board)
+    debugger
     @rows = rows
   end
 
@@ -90,6 +93,11 @@ class Board
 
   def empty?(pos)
     self[pos].nil?
+  end
+
+  def add_piece(piece, target_pos) # POTENTIAL PROBLEM
+    raise "position is filled" unless self.empty?(target_pos)
+    self[target_pos] = piece
   end
 
   # def in_check?(color)

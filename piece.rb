@@ -11,14 +11,16 @@ class Piece
 
   attr_accessor :king
   attr_reader :color
+  attr_reader :board
 
 
-  def initialize(board, color, king = false)
-    @king = king
-    @color = color
-    @pos = pos
+  def initialize(board, color, pos, king = false)
+    #add errors if off board or wrong color
+    @board, @color, @pos, @king = board, color, pos, king
+
     @token = (@color == :red) ? :r : :w
 
+    board.add_piece(self, pos)
   end
 
   def move_diffs
@@ -26,17 +28,24 @@ class Piece
   end
 
   def perform_slide(start_pos, end_pos)
-    # check if legal
-    cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
-    move_diffs.include?(cur_move_diff)
+    # check if legal (is included in #move_diffs array)
     # illegal move returns false
+    cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
+
+    # could make invalid_move? helper method
+    return false unless move_diffs.include?(cur_move_diff)
+    return false unless @board.empty?(end_pos)
+    @board.move(start_pos, end_pos)
+
     # possibly promote, call #maybe_promote
+    true
   end
 
   def perform_jump(start_pos, end_pos)
     # check if legal
     # illegal move returns false
     # possibly promote, call #maybe_promote
+    # removes jumped piece from the board
   end
 
   def maybe_promote
