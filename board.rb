@@ -49,13 +49,10 @@ class Board
 
   def move(start_pos, end_pos)
     start_piece = self[start_pos]
-    if start_piece.valid_moves.include?(end_pos)
-      start_piece.pos = end_pos
-      self[start_pos] = nil
-      self[end_pos] = start_piece
-    else
-      raise InvalidMoveError
-    end
+    start_piece.pos = end_pos
+    self[start_pos] = nil
+    self[end_pos] = start_piece
+
     self
   end
 

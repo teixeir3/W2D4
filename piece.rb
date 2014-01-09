@@ -16,9 +16,8 @@ class Piece
     }
 
 
-  attr_accessor :king
-  attr_reader :color
-  attr_reader :board
+  attr_accessor :king, :pos
+  attr_reader :color, :board
 
 
   def initialize(board, color, pos, king = false)
@@ -31,7 +30,7 @@ class Piece
   end
 
   def move_diffs
-    DIAGNAL_DIRS.values
+    DIAGONAL_DIRS.values
   end
 
   def perform_slide(start_pos, end_pos)
@@ -40,11 +39,13 @@ class Piece
     cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
 
     # could make invalid_move? helper method
+    p cur_move_diff
+
     return false unless move_diffs.include?(cur_move_diff)
     return false unless @board.empty?(end_pos)
     @board.move(start_pos, end_pos)
 
-    # possibly promote, call #maybe_promote
+    maybe_promote
     true
   end
 
