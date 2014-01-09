@@ -8,29 +8,31 @@ end
 class Board
   attr_accessor :rows
 
-  def self.default_board  # Populates default board with "x". MUST ADD Piece Objects.
-    rows = Array.new(8) { Array.new(8) }
+  def default_board(filled)  # Populates default board with "x". MUST ADD Piece Objects.
+    default_rows = Array.new(8) { Array.new(8) }
 
-    rows = rows.each_with_index do |row, x|
-      next if x.between?(3, 4)
-      color = :red if x.between?(0, 2)
-      color = :white if x.between?(5, 7)
-      row.each_index do |y|
-        if x == 0 || x % 2 == 0
-          next if y == 0 || y % 2 == 0
-          rows[x][y] = Piece.new(self, :red, [x, y])
-        else
-          next unless y % 2 == 0
-          rows[x][y] = Piece.new(self, :white, [x, y])
+    if filled
+      # debugger
+      default_rows = default_rows.each_with_index do |row, x|
+        next if x.between?(3, 4)
+        color = :red if x.between?(0, 2)
+        color = :white if x.between?(5, 7)
+        row.each_index do |y|
+          if x == 0 || x % 2 == 0
+            next if y == 0 || y % 2 == 0
+            default_rows[x][y] = Piece.new(self, :red, [x, y])
+          else
+            next unless y % 2 == 0
+            default_rows[x][y] = Piece.new(self, :white, [x, y])
+          end
         end
       end
     end
-    rows
+    default_rows
   end
 
-  def initialize(rows = Board.default_board)
-    debugger
-    @rows = rows
+  def initialize(filled = true)
+    @rows = default_board(filled)
   end
 
   def [](pos)
@@ -128,7 +130,8 @@ class Board
       print "#{i+1} "
       row.each do |cell|
         if cell.nil?
-          print "_ "
+          # Maybe add unicode for blank squares
+          print "\u25FB"
         else
           print cell.render
         end

@@ -1,6 +1,13 @@
 
 class Piece
 
+  UNICODES = {
+    :r_king => "\u2689",
+    :r_piece => "\u2688",
+    :w_king => "\u2687",
+    :w_piece => "\u2686"
+  }
+
   DIAGONAL_DIRS = {
      :up_left => [-1, -1],
      :up_right => [-1,  1],
@@ -49,6 +56,13 @@ class Piece
   end
 
   def maybe_promote
+    self.king = true if on_opposite_side?
+  end
+
+  def on_opposite_side?()
+    if @color == :red
+    end
+
 
   end
 
@@ -78,6 +92,22 @@ class Piece
     # perform_moves!
     # else
     # raise InvalidMoveError
+  end
+
+  def render
+    if color == :red
+      if @king
+        print UNICODES[:r_king]
+      else
+        print UNICODES[:r_piece]
+      end
+    else
+      if @king
+        print UNICODES[:w_king]
+      else
+        print UNICODES[:w_piece]
+      end
+    end
   end
 
 

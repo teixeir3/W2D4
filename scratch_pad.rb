@@ -12,5 +12,5 @@ cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
 
 load './board.rb'
 load './piece.rb'
-b = Board.new
+b = Board.new(false)
 p = Piece.new(b, :red, [0,1])
