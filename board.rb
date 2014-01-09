@@ -124,7 +124,7 @@ class Board
 
   def render
     print "  "
-    ("a".."h").each { |letter| print "#{letter} " }
+    ("a".."h").each { |letter| print "#{letter}" }
     puts
     @rows.each_with_index do |row, i|
       print "#{i+1} "
