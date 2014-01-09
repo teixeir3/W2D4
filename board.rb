@@ -19,7 +19,7 @@ class Board
         color = :white if x.between?(5, 7)
         row.each_index do |y|
           if x == 0 || x % 2 == 0
-            next if y == 0 || y % 2 == 0
+            next if y % 2 == 0
             default_rows[x][y] = Piece.new(self, color, [x, y])
           else
             next unless y % 2 == 0

@@ -59,11 +59,14 @@ class Piece
     self.king = true if on_opposite_side?
   end
 
-  def on_opposite_side?()
-    if @color == :red
+  def on_opposite_side?
+    if @color == :red && @pos[0] == 7
+      return true
+    elsif @color == :white && @pos[0] == 0
+      return true
     end
 
-
+    false
   end
 
   def perform_moves!(move_sequence)
