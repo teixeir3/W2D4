@@ -15,6 +15,12 @@ class Piece
      :down_right => [ 1,  1]
     }
 
+  JUMP_DIRS = {
+      :up_left => [-2, -2],
+      :up_right => [-2,  2],
+      :down_left =>  [ 2, -2],
+      :down_right => [ 2,  2]
+    }
 
   attr_accessor :king, :pos
   attr_reader :color, :board
@@ -33,14 +39,17 @@ class Piece
     DIAGONAL_DIRS.values
   end
 
+  def jump_diffs
+    JUMP_DIRS.values
+  end
+
   def perform_slide(start_pos, end_pos)
-    # check if legal (is included in #move_diffs array)
-    # illegal move returns false
-    cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
+    # could make move_diff helper method
+    cur_move_diff = (end_pos[0] - start_pos[0]), (end_pos[1] - start_pos[1])
 
     # could make invalid_move? helper method
-    p cur_move_diff
 
+    # should raise error
     return false unless move_diffs.include?(cur_move_diff)
     return false unless @board.empty?(end_pos)
     @board.move(start_pos, end_pos)
@@ -49,11 +58,29 @@ class Piece
     true
   end
 
+
   def perform_jump(start_pos, end_pos)
     # check if legal
     # illegal move returns false
-    # possibly promote, call #maybe_promote
     # removes jumped piece from the board
+    cur_move_diff = (end_pos[0] - start_pos[0]), (end_pos[1] - start_pos[1])
+
+    # should raise error
+    return false unless @board.empty?(end_pos)
+    return false unless jump_diffs.include?(cur_move_diff)
+
+    direction = JUMP_DIRS.key(cur_move_diff)
+
+    # shorten this later.
+    jumped_square = [DIAGONAL_DIRS[direction][0] + start_pos[0], DIAGONAL_DIRS[direction][1] + start_pos[1]]
+
+    return false if @board[jumped_square].nil?
+    return false if @board[jumped_square].color == @color
+
+    @board[jumped_square] = nil
+    @board.move(start_pos, end_pos)
+    maybe_promote
+    true
   end
 
   def maybe_promote
