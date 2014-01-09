@@ -52,6 +52,18 @@ class Piece
     # should raise error
     return false unless move_diffs.include?(cur_move_diff)
     return false unless @board.empty?(end_pos)
+
+    direction = DIAGONAL_DIRS.key(cur_move_diff)
+
+    # Only kings to move north and south
+    unless @kinged
+      if color == :white
+        return false if direction.to_s[0] == "s"
+      elsif color == :red
+        return false if direction.to_s[0] == "n"
+      end
+    end
+
     @board.move(start_pos, end_pos)
 
     maybe_promote
@@ -71,8 +83,13 @@ class Piece
     return false unless jump_diffs.include?(cur_move_diff)
 
     direction = JUMP_DIRS.key(cur_move_diff)
+
+    # Only kings to move north and south
     unless @kinged
-      if color == white
+      if color == :white
+        return false if direction.to_s[0] == "s"
+      elsif color == :red
+        return false if direction.to_s[0] == "n"
       end
     end
 
