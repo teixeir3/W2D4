@@ -1,6 +1,14 @@
 
 class Piece
 
+  DIAGONAL_DIRS = {
+     :up_left => [-1, -1],
+     :up_right => [-1,  1],
+     :down_left =>  [ 1, -1],
+     :down_right => [ 1,  1]
+    }
+
+
   attr_accessor :king
   attr_reader :color
 
@@ -8,18 +16,24 @@ class Piece
   def initialize(board, color, king = false)
     @king = king
     @color = color
+    @pos = pos
+    @token = (@color == :red) ? :r : :w
 
   end
 
   def move_diffs
-
+    DIAGNAL_DIRS.values
   end
 
-  def perform_slide
-
+  def perform_slide(start_pos, end_pos)
+    # check if legal
+    cur_move_diff = (end_pos[0]-start_pos[0]), (end_pos[1]-start_pos[1])
+    move_diffs.include?(cur_move_diff)
+    # illegal move returns false
+    # possibly promote, call #maybe_promote
   end
 
-  def perform_jump
+  def perform_jump(start_pos, end_pos)
     # check if legal
     # illegal move returns false
     # possibly promote, call #maybe_promote

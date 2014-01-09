@@ -22,23 +22,6 @@ class Board
           next unless y % 2 == 0
           rows[x][y] = "x"
         end
-        # if x == 1 || x == 6
-#           rows[x][y] = Pawn.new([x, y], self, color)
-#         else
-#           case y
-#           when 0, 7
-#             rows[x][y] = Rook.new([x, y], self, color)
-#           when 1, 6
-#             rows[x][y] = Knight.new([x, y], self, color)
-#           when 2, 5
-#             rows[x][y] = Bishop.new([x, y], self, color)
-#           when 3
-#             rows[x][y] = Queen.new([x, y], self, color)
-#           when 4
-#             rows[x][y] = King.new([x, y], self, color)
-#           end
-#         end
-      end
     end
     rows
   end
