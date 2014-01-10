@@ -113,9 +113,9 @@ class Board
   end
 
   def add_piece(piece, target_pos) # DOESN'T WORK BUGGY
-    unless self.empty?(target_pos)
-      puts self.empty?(target_pos)
-    end
+    # if self.empty?(target_pos)
+#       puts self.empty?(target_pos)
+#     end
     self[target_pos] = piece
   end
 
