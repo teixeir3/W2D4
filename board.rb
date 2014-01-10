@@ -7,6 +7,12 @@ end
 class Board
   attr_accessor :rows
 
+  # REV: This method is a bit verbose. 
+  # 
+  # what I would consider is running an each loop through [0,1,2,5,6,7]
+  # and then running a while loop through each of those where you increment a value "i" by 2 each time
+  # 
+  # Also- you can do x.even? instead of x == 0 || x % 2 == 0 -- 0.even? returns true ;)
   def default_board(rows = nil, filled)  # Populates default board with "x". MUST ADD Piece Objects.
     default_rows = Array.new(8) { Array.new(8) }
 
@@ -33,23 +39,27 @@ class Board
 
     default_rows
   end
-
+  
+  # REV: this is good
   def initialize(rows = nil, filled = false)
     @rows = default_board(rows, filled)
   end
 
+  # REV: this is good
   def [](pos)
     # returns piece object at that pos
     x, y = pos[0], pos[1]
     @rows[x][y]
   end
-
+  
+  # REV: this is good
   def []=(pos, piece)
     # be careful using this method since it doesnt' update the piece's pos
     x, y = pos[0], pos[1]
     @rows[x][y] = piece
   end
-
+  
+  # REV: good. does it need to return anything?
   def move(start_pos, end_pos)
     start_piece = self[start_pos]
     start_piece.pos = end_pos
@@ -59,6 +69,8 @@ class Board
     self
   end
 
+  # REV: I like how you have a destructive version as well which raises an error
+  # Does it need to return self? I haven't read the entire code at this point so I may be wrong.
   def move!(start_pos, end_pos)
     start_piece = self[start_pos]
     if start_piece.moves.include?(end_pos)
@@ -72,13 +84,13 @@ class Board
     self
   end
 
-  # Make this shorter and more clear
+  # REV: 
   def dup
     empty_board = Board.new
     pieces.each do |piece|
-      temp_color = (piece.color == :red) ? :red : :white
-      temp_pos = [piece.pos[0], piece.pos[1]]
-      temp_kinged = piece.kinged
+      temp_color = (piece.color == :red) ? :red : :white # REV: Couldn't you just do temp_color = piece.color
+      temp_pos = [piece.pos[0], piece.pos[1]] # REV: Couldn't you just do temp_pos = piece.pos
+      temp_kinged = piece.kinged # REV: this is good
       temp_piece = Piece.new(empty_board, temp_color, temp_pos, temp_kinged)
 
       # empty_board.add_piece(Piece.new(empty_board, temp_color, temp_pos, temp_kinged), temp_pos)
@@ -104,14 +116,17 @@ class Board
 
   end
 
+  # REV: woohoo!
   def pieces
     self.rows.flatten.compact
   end
 
+  # REV: woohoo!
   def empty?(pos)
     self[pos].nil?
   end
 
+  # REV: woohoo although not sure how necessary this method is
   def add_piece(piece, target_pos) # DOESN'T WORK BUGGY
     # if self.empty?(target_pos)
 #       puts self.empty?(target_pos)
@@ -119,7 +134,9 @@ class Board
     self[target_pos] = piece
   end
 
-
+  # REV: render inevitably gets more complicated when you print
+  # unicode and all the stuff on the side. I feel like this could be 
+  # simplified just a bit.
   def render
     print "  "
     ("a".."h").each { |letter| print "#{letter}" }

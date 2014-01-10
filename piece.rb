@@ -32,7 +32,7 @@ class Piece
   attr_accessor :kinged, :pos, :board
   attr_reader :color
 
-
+  # REV: good!
   def initialize(board, color, pos, kinged = false)
     #add errors if off board or wrong color
     @board, @color, @pos, @kinged = board, color, pos, kinged
@@ -46,6 +46,7 @@ class Piece
     DIAGONAL_DIRS.values
   end
 
+  # REV: nifty to have move_diffs and jump_diffs as two different methods
   def jump_diffs
     JUMP_DIRS.values
   end
@@ -63,6 +64,12 @@ class Piece
     direction = DIAGONAL_DIRS.key(cur_move_diff)
 
     # Only kings to move north and south
+    # REV: I implemented a whole other hash key for kings to get their moves from but this is fine too
+    # ex) MOVES = {
+    #   [:black, false] => [[1, -1], [1, 1]],
+    #   [:red, false] => [[-1, -1], [-1, 1]],
+    #   :king => [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+    #   }
     unless @kinged
       if color == :white
         return false if direction.to_s[0] == "s"
@@ -78,7 +85,7 @@ class Piece
     true
   end
 
-
+  # REV: consider breaking this down a bit but it seems to work
   def perform_jump(start_pos, end_pos)
     cur_move_diff = (end_pos[0] - start_pos[0]), (end_pos[1] - start_pos[1])
 
@@ -109,11 +116,14 @@ class Piece
 
     true
   end
-
+  
+  # REV: I like how this calls another helper method and ends up being a one-liner
   def maybe_promote
     self.kinged = true if on_opposite_side?
   end
 
+  # REV: this might be able to be shortened
+  # ex) (@color == :red && @pos[0] == 0) || (@color == :black && @pos[0] == (@board.n - 1))
   def on_opposite_side?
     if @color == :red && @pos[0] == 7
       return true
@@ -146,7 +156,10 @@ class Piece
 
     nil
   end
-
+  
+  # couldn't you just do dup_board = board.dup
+  # and then something like: dup_board[@pos].perform_moves!(sequence)
+  # as opposed to duping the position and the piece
   def valid_move_seq?(move_sequence)
     dup_pos = @pos
     dup_board = @board.dup
@@ -162,6 +175,9 @@ class Piece
     true
   end
 
+  # REV: this could be simplified into something like: 
+  # -raise InvalidMoveError if valid_move_seq?(sequence) == false
+  # -perform_moves!(sequence)
   def perform_moves(move_sequence)
     duplicate_seq= move_sequence.map(&:dup)
 
@@ -174,6 +190,10 @@ class Piece
     nil
   end
 
+  # REV: some ternary statements could shorten this method up a bit
+  # ex) if color == :red
+  # => puts (@kinged ? UNICODES[:r_king] : UNICODES[:r_piece]) --> this ternary with puts should work although i'm not 100%
+  # etc. etc.
   def render
     if color == :red
       if @kinged
