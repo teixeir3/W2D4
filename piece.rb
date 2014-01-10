@@ -162,12 +162,16 @@ class Piece
     true
   end
 
-  def perform_moves
-    # first check valid_move_seq?
-    # if valid_move_seq?
-    # perform_moves!
-    # else
-    # raise InvalidMoveError
+  def perform_moves(move_sequence)
+    duplicate_seq= move_sequence.map(&:dup)
+
+    if valid_move_seq?(duplicate_seq)
+      perform_moves!(move_sequence)
+    else
+      raise InvalidMoveError
+    end
+
+    nil
   end
 
   def render
