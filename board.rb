@@ -1,26 +1,31 @@
 require_relative 'piece.rb'
 require 'debugger'
 
+class InvalidMoveError < StandardError
+end
 
 class Board
   attr_accessor :rows
 
-  def default_board(filled)  # Populates default board with "x". MUST ADD Piece Objects.
+  def default_board(rows = nil, filled)  # Populates default board with "x". MUST ADD Piece Objects.
     default_rows = Array.new(8) { Array.new(8) }
 
-    if filled
-      # debugger
-      default_rows = default_rows.each_with_index do |row, x|
-        next if x.between?(3, 4)
-        color = :red if x.between?(0, 2)
-        color = :white if x.between?(5, 7)
-        row.each_index do |y|
-          if x == 0 || x % 2 == 0
-            next if y % 2 == 0
-            default_rows[x][y] = Piece.new(self, color, [x, y])
-          else
-            next unless y % 2 == 0
-            default_rows[x][y] = Piece.new(self, color, [x, y])
+    if rows
+      default_rows = rows
+    else
+      if filled
+        default_rows = default_rows.each_with_index do |row, x|
+          next if x.between?(3, 4)
+          color = :red if x.between?(0, 2)
+          color = :white if x.between?(5, 7)
+          row.each_index do |y|
+            if x == 0 || x % 2 == 0
+              next if y % 2 == 0
+              default_rows[x][y] = Piece.new(self, color, [x, y])
+            else
+              next unless y % 2 == 0
+              default_rows[x][y] = Piece.new(self, color, [x, y])
+            end
           end
         end
       end
@@ -29,8 +34,8 @@ class Board
     default_rows
   end
 
-  def initialize(filled = true)
-    @rows = default_board(filled)
+  def initialize(rows = nil, filled = false)
+    @rows = default_board(rows, filled)
   end
 
   def [](pos)
@@ -67,35 +72,50 @@ class Board
     self
   end
 
+  # Make this shorter and more clear
   def dup
-    duped_rows = rows.map(&:dup)
+    empty_board = Board.new
+    pieces.each do |piece|
+      temp_color = (piece.color == :red) ? :red : :white
+      temp_pos = [piece.pos[0], piece.pos[1]]
+      temp_kinged = piece.kinged
+      temp_piece = Piece.new(empty_board, temp_color, temp_pos, temp_kinged)
 
-    duped_rows.each_with_index do |row, row_idx|
-      row.each_index do |col_idx|
-        current_cell = duped_rows[row_idx][col_idx]
-        next if current_cell.nil?
-        duped_rows[row_idx][col_idx] = current_cell.dup
-      end
-    end
-    duped_board = self.class.new(duped_rows)
-    duped_board.pieces.each do |piece|
-      piece.board = duped_board
+      # empty_board.add_piece(Piece.new(empty_board, temp_color, temp_pos, temp_kinged), temp_pos)
     end
 
-    duped_board
+    empty_board
+    # duped_rows = rows.map(&:dup)
+  #
+  #   duped_rows.each_with_index do |row, row_idx|
+  #     row.each_index do |col_idx|
+  #       next if duped_rows[row_idx].nil?
+  #       current_cell = duped_rows[row_idx][col_idx]
+  #
+  #       next if current_cell.nil?
+  #       duped_rows[row_idx][col_idx] = current_cell.dup
+  #     end
+  #   end
+  #   duped_board = self.class.new(duped_rows, false)
+  #   duped_board.pieces.each do |piece|
+  #     piece.board = duped_board
+  #   end
+  #   duped_board
+
   end
 
   def pieces
-    # returns arr of pieces ADD COMPACT
-    self.rows.flatten.reject { |cell| cell.nil? }
+    self.rows.flatten.compact
   end
 
   def empty?(pos)
     self[pos].nil?
   end
 
-  def add_piece(piece, target_pos) # POTENTIAL PROBLEM
-    raise "position is filled" unless self.empty?(target_pos)
+  def add_piece(piece, target_pos) # DOESN'T WORK BUGGY
+    unless self.empty?(target_pos)
+      puts self.empty?(target_pos)
+    end
     self[target_pos] = piece
   end
 

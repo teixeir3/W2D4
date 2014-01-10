@@ -29,8 +29,8 @@ class Piece
       :se => [ 2,  2]
     }
 
-  attr_accessor :kinged, :pos
-  attr_reader :color, :board
+  attr_accessor :kinged, :pos, :board
+  attr_reader :color
 
 
   def initialize(board, color, pos, kinged = false)
@@ -147,14 +147,19 @@ class Piece
     nil
   end
 
-  def valid_move_seq?
-    # calls perform_moves! on duped piece/board
-    # if perform_moves! doesn't return raise error, return true
-    # else, false
+  def valid_move_seq?(move_sequence)
+    dup_pos = @pos
+    dup_board = @board.dup
+    dup_piece = Piece.new(dup_board, @color, dup_pos)
 
-    # will require: begin, rescue, else
-    # dups objects and doesn't modify original board
+    begin
+      dup_piece.perform_moves!(move_sequence)
+    rescue InvalidMoveError => e
+      return false
+    # else true
+    end
 
+    true
   end
 
   def perform_moves
