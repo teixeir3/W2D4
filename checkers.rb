@@ -34,27 +34,34 @@ class Checkers
 
   end
 
+  def render
+    @board.render
+  end
+
+  protected
+
   def get_move_sequence
     positions = []
+    positions << get_pos
 
+    loop do
+      target_pos = get_pos
 
+      return positions if target_pos.empty?
 
-
-
-    positions
+      positions << target_pos
+    end
   end
 
   def get_pos
-    user_input_arr = gets.chomp.split(",").map(&:strip)
-    parsed_input = parse_input(user_input_arr)
-
-
+    user_input_arr = gets.chomp.split("").map(&:strip)
+    parsed_input = (user_input_arr.empty?) ? [] : parse_input(user_input_arr)
   end
 
   def parse_input(user_input)
     parsed_input = []
     p user_input
-    parsed_input[0], parsed_input[1] = user_input[0].ord-97, user_input[1].to_i-1
+    parsed_input[1], parsed_input[0] = user_input[0].ord-97, user_input[1].to_i-1
     parsed_input
   end
 end
