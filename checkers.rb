@@ -12,10 +12,18 @@ class Checkers
   end
 
   def play
+    until won? do
+      begin
+        self.render
+        puts "#{@current_player.to_s.capitalize}, enter a move sequence (ex: c6) and hit enter. Press enter when done:"
+        turn
+      rescue
+        retry
+      end
+      @current_player = (:current_player == :red) ? :white : :red
+    end
 
-    # Take turns until over?
-
-
+    nil
   end
 
   def turn
@@ -26,20 +34,15 @@ class Checkers
 
   end
 
-  def move(move_sequence)
-
-  end
-
-  def won?(color)
+  def won?
     # Game is won if the other color doesn't have any pieces
-    # Game is won if opponent has no valid moves
-    #
+    # Game is won if opponent has no valid moves <-- NOT IMPLEMENTED YET
+    opponent_color = (:current_player == :red) ? :red : :white
+    @board.pieces.each do |piece|
+      return false if piece.color == opponent_color
+    end
 
-    # if current_player
-  end
-
-  def over?
-
+    return true
   end
 
   def render
@@ -68,13 +71,14 @@ class Checkers
 
   def parse_input(user_input)
     parsed_input = []
-    p user_input
+
     parsed_input[1], parsed_input[0] = user_input[0].ord-97, user_input[1].to_i-1
+
     parsed_input
   end
 end
 
 if __FILE__ == $PROGRAM_NAME
-  g = Game.new
+  g = Checkers.new
   g.play
 end
