@@ -38,6 +38,8 @@ class Piece
     @board, @color, @pos, @kinged = board, color, pos, kinged
 
     @token = (@color == :red) ? :r : :w
+    
+    x_pos, y_pos = pos[1], pos[0]
 
     board.add_piece(self, pos)
   end

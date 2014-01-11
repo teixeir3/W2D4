@@ -53,3 +53,14 @@ b[[0,5]]=nil
 b[[2,7]]=nil
 b.render
 b[[4,1]].perform_moves!([[4,1],[2,3], [2,3], [0,5]])
+
+# Make unfilled board / fill it.
+load './board.rb'
+load './piece.rb'
+b = Board.new(false)
+b.fill_rows
+
+# Make filled board
+load './board.rb'
+load './piece.rb'
+b = Board.new(true)

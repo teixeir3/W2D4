@@ -5,49 +5,67 @@ class InvalidMoveError < StandardError
 end
 
 class Board
-  attr_accessor :rows
+  attr_accessor :grid
 
-  def default_board(rows = nil, filled)  # Populates default board with "x". MUST ADD Piece Objects.
-    default_rows = Array.new(8) { Array.new(8) }
+  # def default_board(filled)
+#     default_rows =
+#
+#
+#     default_rows = fill_rows(default_rows) if filled
+#     #   default_rows = default_rows.each_with_index do |row, x|
+#     #     next if x.between?(3, 4)
+#     #     color = :red if x.between?(0, 2)
+#     #     color = :white if x.between?(5, 7)
+#     #     row.each_index do |y|
+#     #       if x.even?
+#     #         next if y.even?
+#     #         default_rows[x][y] = Piece.new(self, color, [x, y])
+#     #       else
+#     #         next unless y.even?
+#     #         default_rows[x][y] = Piece.new(self, color, [x, y])
+#     #       end
+#     #     end
+#     #   end
+#     # end
+#
+#     default_rows
+#   end
 
-    if rows
-      default_rows = rows
-    else
-      if filled
-        default_rows = default_rows.each_with_index do |row, x|
-          next if x.between?(3, 4)
-          color = :red if x.between?(0, 2)
-          color = :white if x.between?(5, 7)
-          row.each_index do |y|
-            if x == 0 || x % 2 == 0
-              next if y % 2 == 0
-              default_rows[x][y] = Piece.new(self, color, [x, y])
-            else
-              next unless y % 2 == 0
-              default_rows[x][y] = Piece.new(self, color, [x, y])
-            end
+  def initialize(filled = true)
+    @grid = Array.new(8) { Array.new(8) }
+
+    fill_rows if filled
+  end
+
+  def fill_rows
+    @grid = @grid.each_with_index do |row, x|
+        next if x.between?(3, 4)
+        color = :red if x.between?(0, 2)
+        color = :white if x.between?(5, 7)
+        row.each_index do |y|
+          if x.even?
+            next if y.even?
+            @grid[x][y] = Piece.new(self, color, [x, y])
+          else
+            next unless y.even?
+            @grid[x][y] = Piece.new(self, color, [x, y])
           end
         end
       end
-    end
 
-    default_rows
-  end
-
-  def initialize(rows = nil, filled = false)
-    @rows = default_board(rows, filled)
+    nil
   end
 
   def [](pos)
     # returns piece object at that pos
     x, y = pos[0], pos[1]
-    @rows[x][y]
+    @grid[x][y]
   end
 
   def []=(pos, piece)
     # be careful using this method since it doesnt' update the piece's pos
     x, y = pos[0], pos[1]
-    @rows[x][y] = piece
+    @grid[x][y] = piece
   end
 
   def move(start_pos, end_pos)
@@ -124,7 +142,7 @@ class Board
     print "  "
     ("a".."h").each { |letter| print "#{letter}" }
     puts
-    @rows.each_with_index do |row, i|
+    @grid.each_with_index do |row, i|
       print "#{i+1} "
       row.each do |cell|
         if cell.nil?
@@ -139,31 +157,5 @@ class Board
 
     nil
   end
-
-  ############### REMNANTS OF CHESS BOARD #######################
-
-  # class FatalBoardError < StandardError
-  # end
-  #
-  # def in_check?(color)
-  #   king_pos = find_king(color)
-  #   pieces.any? { |piece| piece.moves.include?(king_pos) }
-  # end
-  #
-  # def checkmate?(color)
-  #   players_pieces = pieces.select { |piece| piece.color == color }
-  #   in_check?(color) && players_pieces.none? {|piece| piece.valid_moves.length > 0 }
-  # end
-
-  # def find_king(color)
-  #   @rows.each_index do | row_idx |
-  #     king_idx = self.rows[row_idx].index { |cell| cell.class == King }
-  #     if king_idx
-  #       return [row_idx, king_idx] if self[[row_idx, king_idx]].color == color
-  #     end
-  #   end
-  #   raise FatalBoardError
-  # end
-  ###################################################################
 
 end
