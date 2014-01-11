@@ -31,10 +31,10 @@ class Board
 #     default_rows
 #   end
 
-  def initialize(filled = true)
-    @grid = Array.new(8) { Array.new(8) }
+  def initialize(filled = true, rows = nil)
+    @grid = (rows.nil?) ? Array.new(8) { Array.new(8) } : rows
 
-    fill_rows if filled
+    fill_rows if filled and rows.nil?
   end
 
   def fill_rows
@@ -92,7 +92,7 @@ class Board
 
   # Make this shorter and more clear
   def dup
-    empty_board = Board.new
+    empty_board = Board.new(false)
     pieces.each do |piece|
       temp_color = (piece.color == :red) ? :red : :white
       temp_pos = [piece.pos[0], piece.pos[1]]
@@ -123,7 +123,7 @@ class Board
   end
 
   def pieces
-    self.rows.flatten.compact
+    self.grid.flatten.compact
   end
 
   def empty?(pos)

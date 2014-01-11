@@ -19,6 +19,14 @@ class Checkers
   end
 
   def turn
+    move_sequence = get_move_sequence
+
+    raise "No Piece at that location" if @board.empty?(move_sequence[0])
+    @board[move_sequence[0]].perform_moves(move_sequence)
+
+  end
+
+  def move(move_sequence)
 
   end
 

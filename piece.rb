@@ -38,7 +38,7 @@ class Piece
     @board, @color, @pos, @kinged = board, color, pos, kinged
 
     @token = (@color == :red) ? :r : :w
-    
+
     x_pos, y_pos = pos[1], pos[0]
 
     board.add_piece(self, pos)
@@ -128,7 +128,7 @@ class Piece
 
   def perform_moves!(move_sequence)
     # takes a sequence of moves
-    if move_sequence.count % 2 != 0
+    if move_sequence.count < 2
       raise InvalidMoveError
     elsif move_sequence.count == 2
       # make a sliding move
@@ -153,12 +153,10 @@ class Piece
     dup_pos = @pos
     dup_board = @board.dup
     dup_piece = Piece.new(dup_board, @color, dup_pos)
-
     begin
       dup_piece.perform_moves!(move_sequence)
-    rescue InvalidMoveError => e
+    rescue InvalidMoveError
       return false
-    # else true
     end
 
     true
